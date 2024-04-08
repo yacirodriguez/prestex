@@ -31,7 +31,10 @@ export default function Home() {
         <h2 className="text-3xl font-bold mb-6">Promos</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {productos.map((producto) => (
-            <Card key={producto.slug} {...producto} />
+            
+            <Card {...producto} />
+            
+          
           ))}
         </div>
       </div>
