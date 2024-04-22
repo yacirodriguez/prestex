@@ -32,7 +32,7 @@ const Header = () => {
           </nav>
         </div>
       </header>
-      <div className="mt-20"> {/* Espacio para el navbar fijo */}
+      <div className="mt-20">
         {/* Contenido de la página */}
       </div>
     </>

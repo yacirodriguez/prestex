@@ -11,7 +11,7 @@ export default function NosotrosLayout({ children }) {
                 <hr className="my-4" />
                 <div className="bg-slate-400 rounded-lg shadow-md p-6 mb-4">
                     <h1 className="text-3xl font-bold text-gray-800 mb-2">Nuestros Locales</h1>
-                    {/* Aquí puedes añadir más contenido relacionado con los locales, por ejemplo, una lista o tarjetas de locales */}
+                    
                 </div>
                 {children}
             </main>
