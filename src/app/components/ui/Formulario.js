@@ -61,8 +61,8 @@ const Formulario = ({ tipo }) => {
           )}
           {tipo === 'tarjetas' && (
             <>
-              <option value="nueva">Tarjeta Nueva</option>
-              <option value="adicional">Tarjeta Adicional</option>
+              <option value="nueva">Activo</option>
+              <option value="adicional">Jubilado</option>
             </>
           )}
         </select>
