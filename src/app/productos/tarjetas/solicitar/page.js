@@ -1,3 +1,4 @@
+'use client'
 import Formulario from '@/app/components/ui/Formulario'
 import React from 'react'
 import Image from 'next/image'
@@ -11,7 +12,7 @@ const Solicitar = () => {
             src='/chica2.jpg'
             height={500}
             width={500}
-            
+            alt='Imagen'
           />
         </div>
         <div>
