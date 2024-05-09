@@ -1,34 +1,35 @@
 import React from 'react';
+import Link from 'next/link';
 
 const Header = () => {
   return (
     <>
       <header className='w-full bg-blue-900 shadow-xl fixed top-0 z-50'>
         <div className='container mx-auto py-3 flex justify-between items-center'>
-          <a href="/" className='text-4xl font-bold text-slate-200 px-4 font-mono'>
+          <Link href="/" className='text-4xl font-bold text-slate-200 px-4 font-mono'>
             Prestex
-          </a>
+          </Link>
 
           <nav className='flex justify-between items-center font-bold gap-3 px-4'>
             <div className="relative">
-              <a href="/productos/tarjetas" className='text-base text-white p-4 px-4 font-sans text-1xl focus:outline-none'>
+              <Link href="/productos/tarjetas" className='text-base text-white p-4 px-4 font-sans text-1xl focus:outline-none'>
                 Tarjetas
-              </a>
-              <a href="/productos/creditos" className='text-base text-white p-4 px-4 font-sans text-1xl focus:outline-none'>
+              </Link>
+              <Link href="/productos/creditos" className='text-base text-white p-4 px-4 font-sans text-1xl focus:outline-none'>
                 Créditos
-              </a>
+              </Link>
             </div>
 
             {/* Otros enlaces del menú */}
-            <a href="/nosotros" className='text-base text-white p-4 px-4 font-sans text-1xl'>
+            <Link href="/nosotros" className='text-base text-white p-4 px-4 font-sans text-1xl'>
               Nosotros
-            </a>
-            <a href="/contacto" className='text-base text-white p-4 px-4 font-sans text-1xl'>
+            </Link>
+            <Link href="/contacto" className='text-base text-white p-4 px-4 font-sans text-1xl'>
               Contacto
-            </a>
-            <a href="/login" className='text-base text-white p-4 px-4 font-sans text-1xl'>
+            </Link>
+            <Link href="/login" className='text-base text-white p-4 px-4 font-sans text-1xl'>
               Ingresar
-            </a>
+            </Link>
           </nav>
         </div>
       </header>

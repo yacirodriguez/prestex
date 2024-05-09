@@ -3,18 +3,11 @@ import {collection, getDocs, query, where} from 'firebase/firestore'
 import {db} from "@/app/firebase/config"
 
 export async function GET(request, {params}){
-    const {id} = params;
+    
     const productosRef = collection(db, "productos");
 
-    let q;
-    if (id === 'todos') {
-        q = productosRef;  // Obtiene todos los productos
-    } else {
-        q = query(productosRef, where('id', '==', id));  // Busca por producto específico
-    }
-
     try {
-        const querySnapshot = await getDocs(q);
+        const querySnapshot = await getDocs(productosRef);
         if (querySnapshot.empty) {
             return new NextResponse('Producto no encontrado', { status: 404 });
         }
