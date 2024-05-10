@@ -1,12 +1,13 @@
-'use client'
-
 import React, { useState } from 'react';
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from '@/app/firebase/config'; 
 
 const Formulario = ({ tipo }) => {
   const [ci, setCi] = useState('');
   const [nombre, setNombre] = useState('');
   const [actividad, setActividad] = useState('');
   const [solicitud, setSolicitud] = useState('');
+  const [solicitudEnviada, setSolicitudEnviada] = useState(false);
 
   const handleCiChange = (e) => {
     setCi(e.target.value);
@@ -24,10 +25,36 @@ const Formulario = ({ tipo }) => {
     setSolicitud(e.target.value);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault(); 
+   
+    const data = {
+      ci,
+      nombre,
+      actividad,
+      solicitud,
+    };
+
+    try {
+      
+      await addDoc(collection(db, 'solicitudes'), data);
+      setSolicitudEnviada(true);
+      
+      setCi('');
+      setNombre('');
+      setActividad('');
+      setSolicitud('');
+    } catch (error) {
+      console.error('Error adding document: ', error);
+    }
+  };
+
   return (
     <div className="container mx-auto">
       <h1 className="text-2xl font-bold mt-8 mb-4">Formulario de solicitud</h1>
-      <form className="max-w-md">
+      {solicitudEnviada && <p className="text-green-500">Tu solicitud fue enviada con éxito.</p>}
+      <form className="max-w-md" onSubmit={handleSubmit}>
+       
         <input
           type="text"
           value={ci}
@@ -37,6 +64,7 @@ const Formulario = ({ tipo }) => {
           required
         />
 
+        
         <input
           type="text"
           value={nombre}
@@ -46,6 +74,7 @@ const Formulario = ({ tipo }) => {
           required
         />
 
+       
         <select
           value={actividad}
           onChange={handleActividadChange}
@@ -67,6 +96,7 @@ const Formulario = ({ tipo }) => {
           )}
         </select>
 
+        
         <select
           value={solicitud}
           onChange={handleSolicitudChange}
@@ -88,6 +118,7 @@ const Formulario = ({ tipo }) => {
           )}
         </select>
 
+        
         <button
           type="submit"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
