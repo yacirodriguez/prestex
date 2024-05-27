@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { collection, addDoc } from 'firebase/firestore';
-import { db } from '@/app/firebase/config'; 
+import React, { useState, useEffect } from 'react';
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase/config'; // Importa tu configuración de Firebase
 
 const Formulario = ({ tipo }) => {
   const [ci, setCi] = useState('');
@@ -8,13 +8,31 @@ const Formulario = ({ tipo }) => {
   const [actividad, setActividad] = useState('');
   const [solicitud, setSolicitud] = useState('');
   const [solicitudEnviada, setSolicitudEnviada] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleCiChange = (e) => {
-    setCi(e.target.value);
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      setCi(value);
+      setError('');
+    } else {
+      setError('Documento inválido. Solo se permiten números.');
+    }
   };
 
   const handleNombreChange = (e) => {
-    setNombre(e.target.value);
+    const value = e.target.value;
+    if (/^[a-zA-Z\s]*$/.test(value)) {
+      setNombre(value);
+      setError('');
+    } else {
+      setError('Nombre inválido. Solo se permiten letras.');
+    }
   };
 
   const handleActividadChange = (e) => {
@@ -26,8 +44,13 @@ const Formulario = ({ tipo }) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); 
-   
+    e.preventDefault(); // Evita que el formulario haga un envío normal
+
+    if (error) {
+      return;
+    }
+
+    // Crea un objeto con los datos del formulario
     const data = {
       ci,
       nombre,
@@ -36,10 +59,18 @@ const Formulario = ({ tipo }) => {
     };
 
     try {
-      
+      // Verifica si ya existe una solicitud igual en la base de datos
+      const querySnapshot = await getDocs(query(collection(db, 'solicitudes'), where('ci', '==', ci), where('nombre', '==', nombre), where('actividad', '==', actividad), where('solicitud', '==', solicitud)));
+
+      if (!querySnapshot.empty) {
+        setError('Ya tienes una solicitud en curso.');
+        return;
+      }
+
+      // Agrega los datos del formulario a la colección 'solicitudes' en Firestore
       await addDoc(collection(db, 'solicitudes'), data);
       setSolicitudEnviada(true);
-      
+      // Limpiar el formulario después de enviarlo
       setCi('');
       setNombre('');
       setActividad('');
@@ -52,9 +83,10 @@ const Formulario = ({ tipo }) => {
   return (
     <div className="container mx-auto">
       <h1 className="text-2xl font-bold mt-8 mb-4">Formulario de solicitud</h1>
-      {solicitudEnviada && <p className="text-green-500">Tu solicitud fue enviada con éxito.</p>}
+      {isClient && solicitudEnviada && <p className="text-green-500">Tu solicitud fue enviada con éxito.</p>}
+      {error && <p className="text-red-500">{error}</p>}
       <form className="max-w-md" onSubmit={handleSubmit}>
-       
+        {/* Input para la cédula de identidad */}
         <input
           type="text"
           value={ci}
@@ -64,7 +96,7 @@ const Formulario = ({ tipo }) => {
           required
         />
 
-        
+        {/* Input para el nombre */}
         <input
           type="text"
           value={nombre}
@@ -74,7 +106,7 @@ const Formulario = ({ tipo }) => {
           required
         />
 
-       
+        {/* Select para el tipo de actividad */}
         <select
           value={actividad}
           onChange={handleActividadChange}
@@ -96,7 +128,7 @@ const Formulario = ({ tipo }) => {
           )}
         </select>
 
-        
+        {/* Select para el tipo de solicitud */}
         <select
           value={solicitud}
           onChange={handleSolicitudChange}
@@ -118,7 +150,7 @@ const Formulario = ({ tipo }) => {
           )}
         </select>
 
-        
+        {/* Botón para enviar el formulario */}
         <button
           type="submit"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"

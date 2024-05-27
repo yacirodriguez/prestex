@@ -2,15 +2,17 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import Link from 'next/link';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
 
 const Login = () => {
-    const { signInWithEmailAndPassword } = useAuth();
+    const { loginUser } = useAuth();
+    const router = useRouter();
     const [values, setValues] = useState({
         email: '',
         password: ''
     });
     const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(false);
 
     const handleChange = (e) => {
         setValues({
@@ -22,10 +24,11 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await signInWithEmailAndPassword(values.email, values.password);
-            // Si el inicio de sesión es exitoso, puedes redirigir al usuario o realizar alguna otra acción
+            await loginUser(values.email, values.password);
+            setSuccess(true);
+            setError(null);
+            router.push('/usuario'); // Redirige al usuario a la página de usuario
         } catch (error) {
-            // Manejo de errores
             console.error(error);
             setError("Error al iniciar sesión. Por favor, verifica tus credenciales.");
         }
@@ -35,9 +38,10 @@ const Login = () => {
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-8">
                 <div>
-                    <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Inicia Sesion</h2>
+                    <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Inicia Sesión</h2>
                 </div>
                 {error && <div className="text-red-500 text-center">{error}</div>}
+                {success && <div className="text-green-500 text-center">¡Has iniciado sesión exitosamente!</div>}
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                     <div>
                         <input
@@ -63,7 +67,7 @@ const Login = () => {
                     </div>
                     <div>
                         <button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            Iniciar Sesion
+                            Iniciar Sesión
                         </button>
                     </div>
                 </form>

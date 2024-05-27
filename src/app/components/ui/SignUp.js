@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from "@/app/firebase/config";
@@ -5,6 +6,7 @@ import { auth } from "@/app/firebase/config";
 const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -13,7 +15,13 @@ const SignUp = () => {
       await createUserWithEmailAndPassword(auth, email, password);
       setEmail('');
       setPassword('');
+      setError(null); // Clear any previous error
     } catch (error) {
+      if (error.code === 'auth/email-already-in-use') {
+        setError("El usuario con ese email ya existe.");
+      } else {
+        setError("Error al crear la cuenta. Por favor, intenta de nuevo.");
+      }
       console.error(error);
     }
   };
@@ -24,6 +32,7 @@ const SignUp = () => {
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Crea tu Cuenta</h2>
         </div>
+        {error && <div className="text-red-500 text-center">{error}</div>}
         <form className="mt-8 space-y-6" onSubmit={handleSignUp}>
           <div>
             <input
